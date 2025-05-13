@@ -123,4 +123,24 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Google reCAPTCHA Configuration
+    |--------------------------------------------------------------------------
+    |
+    | These environment variables are used for integrating Google reCAPTCHA
+    | v2 into your application. The "site key" is used in the frontend
+    | to render the widget, and the "secret key" is used on the server
+    | to verify the user's response with Google's verification API.
+    |
+    | You can obtain these keys from: https://www.google.com/recaptcha/admin
+    |
+    */
+
+    'captcha' => [
+        'site_key' => env('CAPTCHA_SITE_KEY'),
+        'secret_key' => env('CAPTCHA_SECRET_KEY'),
+    ],
+
+
 ];
