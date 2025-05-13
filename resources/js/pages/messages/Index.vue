@@ -5,9 +5,25 @@
         <table class="min-w-full bg-gray-100  rounded-md shadow-md">
             <thead>
                 <tr>
-                    <th class="px-4 py-2 text-center">Name</th>
+                    <th class="px-4 py-2 text-center cursor-pointer flex items-center justify-center gap-1"
+                        @click="sortBy('name')">
+                        Name
+                        <ArrowDownWideNarrow v-if="sortDirection === 'desc'"
+                            :class="sort === 'name' ? 'text-blue-500' : 'text-gray-500'" :size="20" />
+                        <ArrowDownNarrowWide v-else :class="sort === 'name' ? 'text-blue-500' : 'text-gray-500'"
+                            :size="20" />
+                    </th>
+
                     <th class="px-4 py-2 text-center">Message</th>
-                    <th class="px-4 py-2 text-center min-w-32">Created At</th>
+                    <th class="px-4 py-2 text-center min-w-48 cursor-pointer flex items-center justify-center gap-1"
+                        @click="sortBy('created_at')">
+                        Created At
+                        <ArrowDownWideNarrow v-if="sortDirection === 'desc'"
+                            :class="sort === 'created_at' ? 'text-blue-500' : 'text-gray-500'" :size="20" />
+                        <ArrowDownNarrowWide v-else :class="sort === 'created_at' ? 'text-blue-500' : 'text-gray-500'"
+                            :size="20" />
+                    </th>
+
                     <th class="px-4 py-2 text-center"></th>
                 </tr>
             </thead>
@@ -51,14 +67,20 @@
 
 <script>
 import Pagination from '@/components/Pagination.vue';
+import { ArrowDownNarrowWide } from 'lucide-vue-next';
+import { ArrowDownWideNarrow } from 'lucide-vue-next';
 
 export default {
     props: {
         messages: Object,
         userIp: String,
+        sort: String,
+        sortDirection: String,
     },
     components: {
         Pagination,
+        ArrowDownNarrowWide,
+        ArrowDownWideNarrow,
     },
     methods: {
         formatDate(date) {
@@ -82,6 +104,10 @@ export default {
             const now = new Date();
             const diffMs = now - created;
             return diffMs < 5 * 60 * 1000; // 5 minutes in milliseconds
+        },
+        sortBy(column) {
+            let sortDirection = this.sort === column && this.sortDirection === 'asc' ? 'desc' : 'asc';
+            this.$inertia.get(this.$page.url, { sort: column, sortDirection });
         },
     }
 };

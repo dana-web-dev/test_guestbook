@@ -27,15 +27,25 @@ class MessageController extends Controller
         return redirect()->route('messages.index')->with('success', 'Message created.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $messages = Message::orderBy('created_at', 'desc')->paginate(10);
+        $validated = $request->validate([
+            'sort' => 'nullable|string|in:created_at,name',
+            'sortDirection' => 'nullable|string|in:asc,desc',
+        ]);
+
+        $sort = $validated['sort'] ?? 'created_at';
+        $sortDirection = $validated['sortDirection'] ?? 'desc';
+
+        $messages = Message::orderBy($sort, $sortDirection)->paginate(10);
 
         $userIp = request()->ip();
 
         return inertia('messages/Index', [
             'messages' => $messages,
             'userIp' => $userIp,
+            'sort' => $sort,
+            'sortDirection' => $sortDirection,
         ]);
     }
 
