@@ -24,7 +24,7 @@ class MessageController extends Controller
             'user_ip' => $request->ip(),
         ]);
 
-        return response()->json($message, 201);
+        return redirect()->route('messages.index')->with('success', 'Message created.');
     }
 
     public function index()
@@ -32,7 +32,7 @@ class MessageController extends Controller
         $messages = Message::orderBy('created_at', 'desc')->paginate(10);
 
         $userIp = request()->ip();
-        
+
         return inertia('messages/Index', [
             'messages' => $messages,
             'userIp' => $userIp,
@@ -44,10 +44,10 @@ class MessageController extends Controller
         $message = Message::findOrFail($id);
 
         if ($message->user_ip !== $request->ip() || now()->diffInMinutes($message->created_at) > 5) {
-            return response()->json(['error' => 'You cannot delete this message.'], 403);
+            return redirect()->back()->withErrors(['error' => 'You cannot delete this message.']);
         }
 
         $message->delete();
-        return response()->json(['message' => 'Message deleted successfully']);
+        return redirect()->back()->with('success', 'Message deleted successfully.');
     }
 }

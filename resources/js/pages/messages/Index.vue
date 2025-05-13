@@ -1,20 +1,21 @@
 <template>
     <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-semibold mb-4">Messages</h1>
+        <h1 class="text-2xl font-semibold mb-4">Guestbook</h1>
 
-        <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+        <table class="min-w-full bg-gray-100  rounded-md shadow-md">
             <thead>
                 <tr>
-                    <th class="px-4 py-2 text-left">Name</th>
-                    <th class="px-4 py-2 text-left">Message</th>
-                    <th class="px-4 py-2 text-left">Created At</th>
-                    <th class="px-4 py-2 text-left"></th>
+                    <th class="px-4 py-2 text-center">Name</th>
+                    <th class="px-4 py-2 text-center">Message</th>
+                    <th class="px-4 py-2 text-center min-w-32">Created At</th>
+                    <th class="px-4 py-2 text-center"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="message in messages.data" :key="message.id">
                     <td class="px-4 py-2">
-                        <a :href="'mailto:' + message.email" class="text-blue-500">{{ message.name }}</a>
+                        {{ message.name }}&nbsp;<a :href="'mailto:' + message.email" class="text-blue-500">{{
+                            message.email }}</a>
                     </td>
                     <td class="px-4 py-2">
                         <p>{{ message.message }}</p>
@@ -24,16 +25,19 @@
                                     class="max-w-32 h-auto mt-2">
                             </a>
                         </div>
-                        <p v-if="message.updated_at">Edited: {{ formatDate(message.updated_at) }}</p>
+                        <p v-if="message.updated_at && message.created_at !== message.updated_at"
+                            class="text-sm text-gray-500">Edited: {{
+                                formatDate(message.updated_at) }}</p>
                     </td>
                     <td class="px-4 py-2">{{ formatDate(message.created_at) }}</td>
                     <td class="px-4 py-2">
-                        <button v-if="message.user_ip === userIp" @click="deleteMessage(message.id)"
-                            class="bg-red-500 text-white px-2 py-1 rounded-md">
+                        <button v-if="message.user_ip === userIp && isWithinFiveMinutes(message.created_at)"
+                            @click="deleteMessage(message.id)"
+                            class="bg-red-500 text-white px-2 py-1 rounded-md mb-2 cursor-pointer">
                             Delete
                         </button>
                         <button @click="editMessage(message.id)"
-                            class="bg-blue-500 text-white px-2 py-1 rounded-md ml-2">
+                            class="bg-blue-500 text-white px-2 py-1 rounded-md ml-2 cursor-pointer">
                             Edit
                         </button>
                     </td>
@@ -41,24 +45,20 @@
             </tbody>
         </table>
 
-        <!-- Pagination -->
-        <div class="mt-4">
-            <button @click="changePage(messages.prev_page_url)" :disabled="!messages.prev_page_url"
-                class="px-4 py-2 bg-gray-200 rounded-md mr-2">
-                Previous
-            </button>
-            <button @click="changePage(messages.next_page_url)" :disabled="!messages.next_page_url"
-                class="px-4 py-2 bg-gray-200 rounded-md">
-                Next
-            </button>
-        </div>
+        <Pagination :resource="messages" />
     </div>
 </template>
 
 <script>
+import Pagination from '@/components/Pagination.vue';
+
 export default {
     props: {
         messages: Object,
+        userIp: String,
+    },
+    components: {
+        Pagination,
     },
     methods: {
         formatDate(date) {
@@ -76,7 +76,13 @@ export default {
         },
         editMessage(id) {
             this.$inertia.get(`/messages/${id}/edit`);
-        }
+        },
+        isWithinFiveMinutes(createdAt) {
+            const created = new Date(createdAt);
+            const now = new Date();
+            const diffMs = now - created;
+            return diffMs < 5 * 60 * 1000; // 5 minutes in milliseconds
+        },
     }
 };
 </script>
