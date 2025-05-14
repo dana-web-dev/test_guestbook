@@ -4,9 +4,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome');
-})->name('home');
+Route::get('/', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
+Route::get('/messages/create', [App\Http\Controllers\MessageController::class, 'create'])->name('messages.create');
+Route::post('/messages', [App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
+Route::get('/messages/{message}/edit', [App\Http\Controllers\MessageController::class, 'edit'])->name('messages.edit');
+Route::post('/messages/{message}', [App\Http\Controllers\MessageController::class, 'update'])->name('messages.update');
+Route::delete('/messages/{message}', [App\Http\Controllers\MessageController::class, 'destroy'])->name('messages.destroy');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');

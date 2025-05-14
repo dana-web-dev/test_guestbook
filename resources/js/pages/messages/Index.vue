@@ -1,88 +1,90 @@
 <template>
-    <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-semibold mb-4">Guestbook</h1>
+    <GuestbookLayout>
+        <div class="container mx-auto p-4">
+            <div class="flex items-center justify-between gap-4 mb-4">
+                <Link :href="route('messages.create')"
+                    class="bg-green-500 text-white px-4 py-2 rounded cursor-pointer inline-block shadow-md">
+                + Add message
+                </Link>
+            </div>
 
-        <div class="flex items-center justify-between gap-4 mb-4">
-            <Link :href="route('messages.create')"
-                class="bg-green-500 text-white px-4 py-2 rounded cursor-pointer inline-block">
-            + Add message
-            </Link>
 
-            <Link :href="route('login')"
-                class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]">
-            Log in
-            </Link>
+            <table class="min-w-full bg-white  rounded-md shadow-md">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-center cursor-pointer flex items-center justify-center gap-1"
+                            @click="sortBy('name')">
+                            Name
+                            <ArrowDownWideNarrow v-if="sortDirection === 'desc'"
+                                :class="sort === 'name' ? 'text-blue-500' : 'text-gray-500'" :size="20" />
+                            <ArrowDownNarrowWide v-else :class="sort === 'name' ? 'text-blue-500' : 'text-gray-500'"
+                                :size="20" />
+                        </th>
+
+                        <th class="px-4 py-2 text-center">Message</th>
+                        <th class="px-4 py-2 text-center min-w-48 cursor-pointer flex items-center justify-center gap-1"
+                            @click="sortBy('created_at')">
+                            Created At
+                            <ArrowDownWideNarrow v-if="sortDirection === 'desc'"
+                                :class="sort === 'created_at' ? 'text-blue-500' : 'text-gray-500'" :size="20" />
+                            <ArrowDownNarrowWide v-else
+                                :class="sort === 'created_at' ? 'text-blue-500' : 'text-gray-500'" :size="20" />
+                        </th>
+
+                        <th class="px-4 py-2 text-center"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="message in messages.data" :key="message.id">
+                        <td class="px-4 py-2 align-top">
+                            {{ message.name }}&nbsp;<a :href="'mailto:' + message.email" class="text-blue-500">{{
+                                message.email }}</a>
+                        </td>
+                        <td class="px-4 py-2 align-top">
+                            <p>{{ message.message }}</p>
+                            <div v-if="message.image">
+                                <a :href="'/storage/' + message.image" target="_blank">
+                                    <img :src="'/storage/' + message.image" alt="Image Preview"
+                                        class="max-w-32 h-auto mt-2 rounded-md">
+                                </a>
+                            </div>
+                            <p v-if="message.updated_at && message.created_at !== message.updated_at"
+                                class="text-sm text-gray-500">Edited: {{
+                                    message.updated_at_formatted }}</p>
+                        </td>
+                        <td class="px-4 py-2 align-top">{{ message.created_at_formatted }}</td>
+                        <td class="px-4 py-2 align-top">
+                            <div v-if="message.user_ip === userIp && isWithinFiveMinutes(message.created_at)">
+                                <button @click="deleteMessage(message.id)"
+                                    class="bg-red-500 text-white px-2 py-1 rounded-md mb-2 cursor-pointer">
+                                    Delete
+                                </button>
+                                <button @click="editMessage(message.id)"
+                                    class="bg-blue-500 text-white px-2 py-1 rounded-md ml-2 cursor-pointer">
+                                    Edit
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <Pagination :resource="messages" />
         </div>
-
-
-        <table class="min-w-full bg-gray-100  rounded-md shadow-md">
-            <thead>
-                <tr>
-                    <th class="px-4 py-2 text-center cursor-pointer flex items-center justify-center gap-1"
-                        @click="sortBy('name')">
-                        Name
-                        <ArrowDownWideNarrow v-if="sortDirection === 'desc'"
-                            :class="sort === 'name' ? 'text-blue-500' : 'text-gray-500'" :size="20" />
-                        <ArrowDownNarrowWide v-else :class="sort === 'name' ? 'text-blue-500' : 'text-gray-500'"
-                            :size="20" />
-                    </th>
-
-                    <th class="px-4 py-2 text-center">Message</th>
-                    <th class="px-4 py-2 text-center min-w-48 cursor-pointer flex items-center justify-center gap-1"
-                        @click="sortBy('created_at')">
-                        Created At
-                        <ArrowDownWideNarrow v-if="sortDirection === 'desc'"
-                            :class="sort === 'created_at' ? 'text-blue-500' : 'text-gray-500'" :size="20" />
-                        <ArrowDownNarrowWide v-else :class="sort === 'created_at' ? 'text-blue-500' : 'text-gray-500'"
-                            :size="20" />
-                    </th>
-
-                    <th class="px-4 py-2 text-center"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="message in messages.data" :key="message.id">
-                    <td class="px-4 py-2 align-top">
-                        {{ message.name }}&nbsp;<a :href="'mailto:' + message.email" class="text-blue-500">{{
-                            message.email }}</a>
-                    </td>
-                    <td class="px-4 py-2 align-top">
-                        <p>{{ message.message }}</p>
-                        <div v-if="message.image">
-                            <a :href="'/storage/' + message.image" target="_blank">
-                                <img :src="'/storage/' + message.image" alt="Image Preview"
-                                    class="max-w-32 h-auto mt-2 rounded-md">
-                            </a>
-                        </div>
-                        <p v-if="message.updated_at && message.created_at !== message.updated_at"
-                            class="text-sm text-gray-500">Edited: {{
-                                message.updated_at_formatted }}</p>
-                    </td>
-                    <td class="px-4 py-2 align-top">{{ message.created_at_formatted }}</td>
-                    <td class="px-4 py-2 align-top">
-                        <div v-if="message.user_ip === userIp && isWithinFiveMinutes(message.created_at)">
-                            <button @click="deleteMessage(message.id)"
-                                class="bg-red-500 text-white px-2 py-1 rounded-md mb-2 cursor-pointer">
-                                Delete
-                            </button>
-                            <button @click="editMessage(message.id)"
-                                class="bg-blue-500 text-white px-2 py-1 rounded-md ml-2 cursor-pointer">
-                                Edit
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <Pagination :resource="messages" />
-    </div>
+    </GuestbookLayout>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination.vue';
 import { ArrowDownNarrowWide, ArrowDownWideNarrow } from 'lucide-vue-next';
-import { Link } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3';
+import GuestbookLayout from '@/layouts/GuestbookLayout.vue'
+
+const breadcrumbs = [
+    { title: 'Guestbook', href: '/messages' },
+    { title: 'Users', href: '/users' },
+    { title: 'Edit User', href: '/users/1/edit' },
+];
 
 export default {
     props: {
@@ -96,6 +98,7 @@ export default {
         ArrowDownNarrowWide,
         ArrowDownWideNarrow,
         Link,
+        GuestbookLayout
     },
     data() {
         return {

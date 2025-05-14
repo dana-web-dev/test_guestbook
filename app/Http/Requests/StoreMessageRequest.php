@@ -23,11 +23,11 @@ class StoreMessageRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255',
             'message' => 'required|max:1000',
-            'image' => 'nullable|mimes:jpg,jpeg,png|max:4096', // 4 MB
+            'image' => 'nullable|file|mimes:jpg,jpeg,png|max:4096', // 4 MB
             'captcha' => ['required', function ($attribute, $value, $fail) {
 
                 $secret = config('app.captcha.secret_key');
@@ -58,5 +58,7 @@ class StoreMessageRequest extends FormRequest
 
             }],
         ];
+
+        return $rules;
     }
 }
