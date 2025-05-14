@@ -2,9 +2,10 @@
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-semibold mb-4">Guestbook</h1>
 
-        <button @click="openModal" class="mb-4 bg-green-500 text-white px-4 py-2 rounded cursor-pointer">
-            + Add message
-        </button>
+        <Link :href="route('messages.create')"
+            class="mb-4 bg-green-500 text-white px-4 py-2 rounded cursor-pointer inline-block">
+        + Add message
+        </Link>
 
         <MessageModal :show="showModal" @close="closeModal" />
 
@@ -35,11 +36,11 @@
             </thead>
             <tbody>
                 <tr v-for="message in messages.data" :key="message.id">
-                    <td class="px-4 py-2">
+                    <td class="px-4 py-2 align-top">
                         {{ message.name }}&nbsp;<a :href="'mailto:' + message.email" class="text-blue-500">{{
                             message.email }}</a>
                     </td>
-                    <td class="px-4 py-2">
+                    <td class="px-4 py-2 align-top">
                         <p>{{ message.message }}</p>
                         <div v-if="message.image">
                             <a :href="'/storage/' + message.image" target="_blank">
@@ -51,17 +52,18 @@
                             class="text-sm text-gray-500">Edited: {{
                                 formatDate(message.updated_at) }}</p>
                     </td>
-                    <td class="px-4 py-2">{{ formatDate(message.created_at) }}</td>
-                    <td class="px-4 py-2">
-                        <button v-if="message.user_ip === userIp && isWithinFiveMinutes(message.created_at)"
-                            @click="deleteMessage(message.id)"
-                            class="bg-red-500 text-white px-2 py-1 rounded-md mb-2 cursor-pointer">
-                            Delete
-                        </button>
-                        <button @click="editMessage(message.id)"
-                            class="bg-blue-500 text-white px-2 py-1 rounded-md ml-2 cursor-pointer">
-                            Edit
-                        </button>
+                    <td class="px-4 py-2 align-top">{{ formatDate(message.created_at) }}</td>
+                    <td class="px-4 py-2 align-top">
+                        <div v-if="message.user_ip === userIp && isWithinFiveMinutes(message.created_at)">
+                            <button @click="deleteMessage(message.id)"
+                                class="bg-red-500 text-white px-2 py-1 rounded-md mb-2 cursor-pointer">
+                                Delete
+                            </button>
+                            <button @click="editMessage(message.id)"
+                                class="bg-blue-500 text-white px-2 py-1 rounded-md ml-2 cursor-pointer">
+                                Edit
+                            </button>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -75,6 +77,7 @@
 import Pagination from '@/components/Pagination.vue';
 import MessageModal from '@/pages/messages/partials/MessageModal.vue';
 import { ArrowDownNarrowWide, ArrowDownWideNarrow } from 'lucide-vue-next';
+import { Link } from '@inertiajs/vue3'
 
 export default {
     props: {
@@ -88,6 +91,7 @@ export default {
         MessageModal,
         ArrowDownNarrowWide,
         ArrowDownWideNarrow,
+        Link,
     },
     data() {
         return {

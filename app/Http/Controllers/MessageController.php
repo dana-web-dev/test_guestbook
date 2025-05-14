@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreMessageRequest;
 
 class MessageController extends Controller
 {
-    public function store(Request $request)
+    public function create() 
     {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|max:255',
-            'message' => 'required|max:1000',
-            'image' => 'nullable|mimes:jpg,jpeg,png|max:4096', // 4MB
-            'captcha' => 'required|captcha',
-        ]);
+         return inertia('messages/Create');
+    }
+
+    public function store(StoreMessageRequest  $request)
+    {
+        $validated = $request->validated();
 
         $message = Message::create([
             'name' => $validated['name'],
