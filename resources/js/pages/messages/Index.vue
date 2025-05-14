@@ -2,10 +2,18 @@
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-semibold mb-4">Guestbook</h1>
 
-        <Link :href="route('messages.create')"
-            class="mb-4 bg-green-500 text-white px-4 py-2 rounded cursor-pointer inline-block">
-        + Add message
-        </Link>
+        <div class="flex items-center justify-between gap-4 mb-4">
+            <Link :href="route('messages.create')"
+                class="bg-green-500 text-white px-4 py-2 rounded cursor-pointer inline-block">
+            + Add message
+            </Link>
+
+            <Link :href="route('login')"
+                class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]">
+            Log in
+            </Link>
+        </div>
+
 
         <table class="min-w-full bg-gray-100  rounded-md shadow-md">
             <thead>

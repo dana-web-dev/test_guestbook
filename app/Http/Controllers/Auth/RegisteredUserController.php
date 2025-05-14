@@ -15,6 +15,13 @@ use Inertia\Response;
 
 class RegisteredUserController extends Controller
 {
+    public function index(): Response
+    {
+        $users = User::orderBy('updated_at', 'desc')->orderBy('id', 'desc')->paginate(10);
+
+        return Inertia::render('auth/Index', compact('users'));
+    }
+
     /**
      * Show the registration page.
      */
@@ -44,8 +51,8 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // Auth::login($user);
 
-        return to_route('dashboard');
+        return to_route('messages.index');
     }
 }
