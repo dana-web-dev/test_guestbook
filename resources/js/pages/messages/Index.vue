@@ -7,8 +7,6 @@
         + Add message
         </Link>
 
-        <MessageModal :show="showModal" @close="closeModal" />
-
         <table class="min-w-full bg-gray-100  rounded-md shadow-md">
             <thead>
                 <tr>
@@ -45,14 +43,14 @@
                         <div v-if="message.image">
                             <a :href="'/storage/' + message.image" target="_blank">
                                 <img :src="'/storage/' + message.image" alt="Image Preview"
-                                    class="max-w-32 h-auto mt-2">
+                                    class="max-w-32 h-auto mt-2 rounded-md">
                             </a>
                         </div>
                         <p v-if="message.updated_at && message.created_at !== message.updated_at"
                             class="text-sm text-gray-500">Edited: {{
-                                formatDate(message.updated_at) }}</p>
+                                message.updated_at_formatted }}</p>
                     </td>
-                    <td class="px-4 py-2 align-top">{{ formatDate(message.created_at) }}</td>
+                    <td class="px-4 py-2 align-top">{{ message.created_at_formatted }}</td>
                     <td class="px-4 py-2 align-top">
                         <div v-if="message.user_ip === userIp && isWithinFiveMinutes(message.created_at)">
                             <button @click="deleteMessage(message.id)"
@@ -75,7 +73,6 @@
 
 <script>
 import Pagination from '@/components/Pagination.vue';
-import MessageModal from '@/pages/messages/partials/MessageModal.vue';
 import { ArrowDownNarrowWide, ArrowDownWideNarrow } from 'lucide-vue-next';
 import { Link } from '@inertiajs/vue3'
 
@@ -88,7 +85,6 @@ export default {
     },
     components: {
         Pagination,
-        MessageModal,
         ArrowDownNarrowWide,
         ArrowDownWideNarrow,
         Link,

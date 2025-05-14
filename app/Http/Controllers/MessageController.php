@@ -17,12 +17,18 @@ class MessageController extends Controller
     {
         $validated = $request->validated();
 
-        $message = Message::create([
+        $data = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'message' => $validated['message'],
             'user_ip' => $request->ip(),
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('messages', 'public');
+        }
+
+        Message::create($data);
 
         return redirect()->route('messages.index')->with('success', 'Message created.');
     }

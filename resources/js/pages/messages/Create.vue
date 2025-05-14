@@ -17,7 +17,7 @@
             </div>
             <div class="mb-4">
                 <label class="block mb-1 font-medium">Image (optional)</label>
-                <input type="file" @change="handleFile" />
+                <input type="file" accept=".jpg,.jpeg,.png" @change="handleFile" />
             </div>
             <div class="mb-4">
                 <label class="block mb-1 font-medium">CAPTCHA</label>
