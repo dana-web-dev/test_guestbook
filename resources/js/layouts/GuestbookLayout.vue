@@ -9,10 +9,24 @@
                 <button class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300 focus:outline-none">
                     Menu
                 </button>
-                <div v-if="dropdownOpen" class="absolute right-0 mt-2 w-40 bg-white shadow rounded z-10">
+                <div v-if="dropdownOpen" class="absolute right-0 mt-2 w-48 bg-white shadow rounded z-10">
                     <Link :href="route('messages.index')" class="block px-4 py-2 hover:bg-gray-100">Messages</Link>
                     <Link :href="route('messages.create')" class="block px-4 py-2 hover:bg-gray-100">Add Message</Link>
-                    <Link :href="route('login')" class="block px-4 py-2 hover:bg-gray-100">Log in</Link>
+                    <template v-if="user">
+                        <Link :href="route('users.index')" class="block px-4 py-2 hover:bg-gray-100">Administrators
+                        </Link>
+                        <Link :href="route('register')" class="block px-4 py-2 hover:bg-gray-100">Add Administrator
+                        </Link>
+                        <Link :href="route('logout')" method="post" as="button"
+                            class="block px-4 py-2 hover:bg-gray-100 w-full text-left">
+                        Log out
+                        </Link>
+                    </template>
+                    <template v-else>
+                        <Link :href="route('login')" class="block px-4 py-2 hover:bg-gray-100">
+                        Log in
+                        </Link>
+                    </template>
                 </div>
             </div>
         </header>
@@ -24,11 +38,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import { ref, computed } from 'vue'
+import { Link, usePage } from '@inertiajs/vue3'
 
 const dropdownOpen = ref(false)
 function toggleDropdown() {
     dropdownOpen.value = !dropdownOpen.value
 }
+
+const user = computed(() => usePage().props.auth?.user)
 </script>

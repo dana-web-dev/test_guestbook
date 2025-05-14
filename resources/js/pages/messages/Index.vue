@@ -54,7 +54,7 @@
                         </td>
                         <td class="px-4 py-2 align-top">{{ message.created_at_formatted }}</td>
                         <td class="px-4 py-2 align-top">
-                            <div v-if="message.user_ip === userIp && isWithinFiveMinutes(message.created_at)">
+                            <div v-if="user || (message.user_ip === userIp && isWithinFiveMinutes(message.created_at))">
                                 <button @click="deleteMessage(message.id)"
                                     class="bg-red-500 text-white px-2 py-1 rounded-md mb-2 cursor-pointer">
                                     Delete
@@ -77,14 +77,11 @@
 <script>
 import Pagination from '@/components/Pagination.vue';
 import { ArrowDownNarrowWide, ArrowDownWideNarrow } from 'lucide-vue-next';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import GuestbookLayout from '@/layouts/GuestbookLayout.vue'
+import { computed } from 'vue'
 
-const breadcrumbs = [
-    { title: 'Guestbook', href: '/messages' },
-    { title: 'Users', href: '/users' },
-    { title: 'Edit User', href: '/users/1/edit' },
-];
+const user = computed(() => usePage().props.auth?.user)
 
 export default {
     props: {
@@ -105,22 +102,17 @@ export default {
             showModal: false,
         };
     },
+    computed: {
+        user() {
+            return usePage().props.auth?.user || null;
+        },
+    },
     methods: {
         openModal() {
             this.showModal = true;
         },
         closeModal() {
             this.showModal = false;
-        },
-        formatDate(date) {
-            const options = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-            };
-            return new Date(date).toLocaleString(undefined, options);
         },
         changePage(url) {
             if (!url) return;

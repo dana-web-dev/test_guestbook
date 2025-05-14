@@ -103,6 +103,13 @@ class MessageController extends Controller
             return redirect()->back()->withErrors(['error' => 'You cannot delete this message.']);
         }
 
+        if ($request->hasFile('image')) {
+            if ($message->image) {
+                Storage::disk('public')->delete($message->image);
+            }
+            $data['image'] = $request->file('image')->store('messages', 'public');
+        }
+
         $message->delete();
         return redirect()->back()->with('success', 'Message deleted successfully.');
     }
