@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\FormatsTimestamps;
 
 class Message extends Model
 {
+    use FormatsTimestamps;
+    
     protected $fillable = [
         'name', 'email', 'message', 'image', 'user_ip',
     ];

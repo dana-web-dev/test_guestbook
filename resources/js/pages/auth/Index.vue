@@ -8,8 +8,9 @@
             + Add User
             </Link>
 
-            <Link :href="route('logout')"
-                class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]">
+            <Link
+                class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                method="post" :href="route('logout')" @click="handleLogout" as="button">
             Log out
             </Link>
         </div>
@@ -41,13 +42,17 @@
                 <tr v-for="user in users.data" :key="user.id">
                     <td class="px-4 py-2 align-top text-center">{{ user.name }}</td>
                     <td class="px-4 py-2 align-top text-center">{{ user.email }}</td>
-                    <td class="px-4 py-2 align-top text-center">{{ formatDate(user.created_at) }}</td>
-                    <td class="px-4 py-2 align-top text-center">{{ formatDate(user.updated_at) }}</td>
+                    <td class="px-4 py-2 align-top text-center">{{ user.created_at_formatted }}</td>
+                    <td class="px-4 py-2 align-top text-center">{{ user.created_at_formatted }}</td>
                     <td class="px-4 py-2 align-top text-center">
-                        <Link :href="route('users.edit', user.id)"
-                            class="bg-blue-500 text-white px-2 py-1 rounded-md cursor-pointer">
-                        Edit
-                        </Link>
+                        <button @click="deleteUser(user.id)"
+                            class="bg-red-500 text-white px-2 py-1 rounded-md mb-2 cursor-pointer">
+                            Delete
+                        </button>
+                        <button @click="editUser(user.id)"
+                            class="bg-blue-500 text-white px-2 py-1 rounded-md ml-2 cursor-pointer">
+                            Edit
+                        </button>
                     </td>
                 </tr>
             </tbody>
@@ -58,7 +63,7 @@
 </template>
 
 <script>
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import Pagination from '@/components/Pagination.vue';
 
 export default {
@@ -67,18 +72,19 @@ export default {
     },
     components: {
         Pagination,
-        Link,
+        Link
     },
     methods: {
-        formatDate(date) {
-            const options = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-            };
-            return new Date(date).toLocaleString(undefined, options);
+        handleLogout() {
+            router.flushAll();
+        },
+        deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                this.$inertia.delete(`/users/${id}`);
+            }
+        },
+        editUser(id) {
+            this.$inertia.get(`/users/${id}/edit`);
         }
     },
 };
