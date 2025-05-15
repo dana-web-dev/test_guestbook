@@ -34,6 +34,12 @@ Route::middleware('auth')->group(function () {
         ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
+
+    Route::get('/users/{user}/edit', [RegisteredUserController::class, 'edit'])->name('users.edit');
+
+    Route::patch('/users/{user}', [RegisteredUserController::class, 'update'])->name('users.update');
+    
+    Route::delete('/users/{user}', [RegisteredUserController::class, 'destroy'])->name('users.destroy');
     
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');

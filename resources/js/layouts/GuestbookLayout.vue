@@ -13,9 +13,9 @@
                     <Link :href="route('messages.index')" class="block px-4 py-2 hover:bg-gray-100">Messages</Link>
                     <Link :href="route('messages.create')" class="block px-4 py-2 hover:bg-gray-100">Add Message</Link>
                     <template v-if="user">
-                        <Link :href="route('users.index')" class="block px-4 py-2 hover:bg-gray-100">Administrators
+                        <Link :href="route('users.index')" class="block px-4 py-2 hover:bg-gray-100">Users
                         </Link>
-                        <Link :href="route('register')" class="block px-4 py-2 hover:bg-gray-100">Add Administrator
+                        <Link :href="route('register')" class="block px-4 py-2 hover:bg-gray-100">Add User
                         </Link>
                         <Link :href="route('logout')" method="post" as="button"
                             class="block px-4 py-2 hover:bg-gray-100 w-full text-left">

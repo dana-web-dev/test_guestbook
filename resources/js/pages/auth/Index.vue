@@ -46,7 +46,7 @@
                         <td class="px-4 py-2 align-top text-center">{{ user.created_at_formatted }}</td>
                         <td class="px-4 py-2 align-top text-center">{{ user.created_at_formatted }}</td>
                         <td class="px-4 py-2 align-top text-center">
-                            <button @click="deleteUser(user.id)"
+                            <button v-if="users.data.length > 1" @click="deleteUser(user.id)"
                                 class="bg-red-500 text-white px-2 py-1 rounded-md mb-2 cursor-pointer">
                                 Delete
                             </button>

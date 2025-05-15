@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
@@ -54,5 +54,33 @@ class RegisteredUserController extends Controller
         // Auth::login($user);
 
         return to_route('users.index');
+    }
+
+    public function edit(User $user): Response
+    {
+        return Inertia::render('auth/Edit', compact('user'));
+    }
+
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        // If password is filled, hash it; otherwise, don't change it
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return to_route('users.index')->with('success', 'User updated successfully.');
+    }
+
+    public function destroy(User $user): RedirectResponse
+    {
+        $user->delete();
+
+        return to_route('users.index')->with('success', 'User deleted successfully.');
     }
 }

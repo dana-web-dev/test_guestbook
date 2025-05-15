@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreMessageRequest;
+use App\Http\Requests\UpdateMessageRequest;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
@@ -64,7 +64,7 @@ class MessageController extends Controller
         ]);
     }
 
-   public function update(StoreMessageRequest $request, Message $message)
+   public function update(UpdateMessageRequest $request, Message $message)
     {
         $validated = $request->validated();
 
@@ -95,9 +95,8 @@ class MessageController extends Controller
     }
 
 
-    public function destroy($id, Request $request)
+    public function destroy(Request $request, Message $message)
     {
-        $message = Message::findOrFail($id);
 
         if ($message->user_ip !== $request->ip() || now()->diffInMinutes($message->created_at) > 5) {
             return redirect()->back()->withErrors(['error' => 'You cannot delete this message.']);
