@@ -1,5 +1,9 @@
 <template>
+
+
     <GuestbookLayout>
+
+        <Head title="Users" />
         <div class="container mx-auto p-4">
             <h1 class="text-2xl font-semibold mb-4">Users</h1>
 
@@ -65,7 +69,7 @@
 </template>
 
 <script>
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, Head } from '@inertiajs/vue3';
 import GuestbookLayout from '@/layouts/GuestbookLayout.vue'
 import Pagination from '@/components/Pagination.vue';
 
@@ -76,7 +80,8 @@ export default {
     components: {
         Pagination,
         Link,
-        GuestbookLayout
+        GuestbookLayout,
+        Head
     },
     methods: {
         handleLogout() {

@@ -1,5 +1,7 @@
 <template>
     <GuestbookLayout>
+
+        <Head title="Add Message" />
         <div class="max-w-lg mx-auto p-6 bg-white shadow rounded-lg mt-8">
 
             <h2 class="text-xl font-semibold mb-4">Leave a Message</h2>
@@ -36,7 +38,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue'
-import { useForm, usePage, Link } from '@inertiajs/vue3'
+import { useForm, usePage, Link, Head } from '@inertiajs/vue3'
 import GuestbookLayout from '@/layouts/GuestbookLayout.vue'
 
 const recaptcha = ref(null)

@@ -1,5 +1,7 @@
 <template>
     <GuestbookLayout>
+
+        <Head title="Edit Message" />
         <div class="max-w-lg mx-auto p-6 bg-white shadow rounded-lg mt-8">
             <h2 class="text-xl font-semibold mb-4">Edit Message</h2>
 
@@ -44,7 +46,7 @@
 </template>
 
 <script setup>
-import { useForm, usePage } from '@inertiajs/vue3'
+import { useForm, usePage, Head } from '@inertiajs/vue3'
 import { ref, computed, onMounted } from 'vue'
 import GuestbookLayout from '@/layouts/GuestbookLayout.vue'
 

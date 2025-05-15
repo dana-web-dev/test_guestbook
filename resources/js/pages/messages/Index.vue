@@ -1,5 +1,7 @@
 <template>
     <GuestbookLayout>
+
+        <Head title="Messages" />
         <div class="container mx-auto p-4">
             <div class="flex items-center justify-between gap-4 mb-4">
                 <Link :href="route('messages.create')"
@@ -77,7 +79,7 @@
 <script>
 import Pagination from '@/components/Pagination.vue';
 import { ArrowDownNarrowWide, ArrowDownWideNarrow } from 'lucide-vue-next';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link, usePage, Head } from '@inertiajs/vue3';
 import GuestbookLayout from '@/layouts/GuestbookLayout.vue'
 import { computed } from 'vue'
 
@@ -95,7 +97,8 @@ export default {
         ArrowDownNarrowWide,
         ArrowDownWideNarrow,
         Link,
-        GuestbookLayout
+        GuestbookLayout,
+        Head
     },
     data() {
         return {
